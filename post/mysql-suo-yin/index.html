@@ -1,22 +1,105 @@
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
-    <id>https://hiwei-zhang.github.io</id>
-    <title>hiwei`s blog</title>
-    <updated>2021-03-24T14:38:55.020Z</updated>
-    <generator>https://github.com/jpmonette/feed</generator>
-    <link rel="alternate" href="https://hiwei-zhang.github.io"/>
-    <link rel="self" href="https://hiwei-zhang.github.io/atom.xml"/>
-    <subtitle>不积硅步，无以至千里</subtitle>
-    <logo>https://hiwei-zhang.github.io/images/avatar.png</logo>
-    <icon>https://hiwei-zhang.github.io/favicon.ico</icon>
-    <rights>All rights reserved 2021, hiwei`s blog</rights>
-    <entry>
-        <title type="html"><![CDATA[mysql索引]]></title>
-        <id>https://hiwei-zhang.github.io/post/mysql-suo-yin/</id>
-        <link href="https://hiwei-zhang.github.io/post/mysql-suo-yin/">
-        </link>
-        <updated>2021-03-24T14:07:19.000Z</updated>
-        <content type="html"><![CDATA[<p>[TOC]</p>
+<!DOCTYPE html>
+<html>
+  <head>
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta content="yes" name="apple-mobile-web-app-capable" />
+  <meta content="black" name="apple-mobile-web-app-status-bar-style" />
+  <meta name="referrer" content="never">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <meta name="author" content="kveln">
+  <title>mysql索引 | hiwei`s blog</title>
+  <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+  <!-- <link href="https://hiwei-zhang.github.io/media/css/bootstrap.min.css" rel="stylesheet"> -->
+  <!--  <link href="https://hiwei-zhang.github.io/media/css/all.min.css" rel="stylesheet" type="text/css"> -->
+  <link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+  <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+  <link rel="alternate" type="application/rss+xml" title="mysql索引 | hiwei`s blog » Feed" href="https://hiwei-zhang.github.io/atom.xml">
+  <link rel="stylesheet"href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+  <link href="https://hiwei-zhang.github.io/styles/main.css" rel="stylesheet">
+  <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/highlight.min.js"></script>
+  <!-- <script src="https://hiwei-zhang.github.io/media/scripts/jquery.min.js"></script> -->
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+    <meta property="og:description" content="mysql索引"/>
+    <meta property="og:url" content="https://hiwei-zhang.github.io/post/mysql-suo-yin/"/>
+    <meta property="og:locale" content="zh-CN"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:site_name" content="hiwei`s blog"/>
+  </head>
+  <body>
+  	<!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+    <div class="container">
+      <a class="navbar-brand" href="https://hiwei-zhang.github.io">hiwei`s blog</a>
+      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        Menu
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          
+          <li class="nav-item">
+              
+              <a class="nav-link" href="/">首页</a>
+              
+          </li>
+          
+          <li class="nav-item">
+              
+              <a class="nav-link" href="/archives">文章</a>
+              
+          </li>
+          
+          <li class="nav-item">
+              
+              <a class="nav-link" href="/tags">标签</a>
+              
+          </li>
+          
+          <li class="nav-item">
+              
+              <a class="nav-link" href="/post/about">关于</a>
+              
+          </li>
+          
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!-- Page Header -->
+  <header class="masthead" style="background-image: url('https://hiwei-zhang.github.io/media/images/home-bg.jpg')">
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="post-heading">
+          	<span class="tags">
+          	 
+            <a href="https://hiwei-zhang.github.io/tag/cm1q2Sn_0/" class="tag">mysql</a>
+            
+        </span>
+            <h1>mysql索引</h1>
+            <span class="meta">
+            	Posted on
+              2021-03-24，34 min read
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Post Content -->
+  <article>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <p>[TOC]</p>
 <h2 id="索引">索引</h2>
 <h4 id="索引是谁实现的">索引是谁实现的？</h4>
 <p>  索引是第三方存储引擎实现的。</p>
@@ -667,39 +750,111 @@ Innodb_buffer_pool_size = （总物理内存 - 系统运行所用 - connection �
 <p>bin_log是主从复制<br>
 undo_log是事务回滚<br>
 redo_log是崩溃恢复</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[servlet解析]]></title>
-        <id>https://hiwei-zhang.github.io/post/servlet-jie-xi/</id>
-        <link href="https://hiwei-zhang.github.io/post/servlet-jie-xi/">
-        </link>
-        <updated>2017-01-06T13:54:37.000Z</updated>
-        <content type="html"><![CDATA[<h4 id="servlet特征">servlet特征</h4>
-<ol>
-<li>servlet是单例多线程的。</li>
-<li>一个servlet实例只会执行一次无参构造器与init()方法，并且是在第一次访问时执行。</li>
-<li>用户每提交一次对当前servlet的请求，就会执行一次service()方法。</li>
-<li>一个servlet实例只会执行一次destroy()方法，在应用停止时执行。</li>
-<li>由于servlet是单例多线程的，所以为了保证其线程安全性，一般情况下是不为servlet类定义可修改的成员变量的。因为每个线程均可修改这个成员变量，会出现线程安全问题。</li>
-<li>默认情况下，servlet在web容器启动时是不会被实例化的。</li>
-</ol>
-<h4 id="由genericservlet看java的多态">由GenericServlet看java的多态</h4>
-<p>  java程序的运行分为编译器和运行期。运行期的类型绑定称之为动态绑定。<br>
-  在GenericServlet中实现了init(ServletConfig config)方法：</p>
-<pre><code>@Override
-public void init(ServletConfig config) throws ServletException {    
-    this.config = config;    
-    this.init();
-}
-</code></pre>
-<p>但是GenericServlet的子类也可能需要实现init(ServletConfig config)方法，在子类实现该方法的时候如果未调用super.init(config)方法，则会导致ServletConfig初始化失败。<br>
-所以GenericServlet添加了重载方法init()交给子类实现。</p>
-<pre><code>public void init() throws ServletException {   
-    // NOOP by default
-   }
-</code></pre>
-<p>子类只需要实现init()方法，只需要关注自身业务实现即可。实现了代码的解耦。这里所用到的就是java的多态。</p>
-]]></content>
-    </entry>
-</feed>
+
+          
+          <p class="next-post">下一篇：
+            <a href="https://hiwei-zhang.github.io/post/servlet-jie-xi/">
+              <span class="post-title">
+                servlet解析&rarr;
+              </span>
+            </a>
+          </p>
+        
+        <div class="comment">
+          
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<div id="gitalk-container"></div>
+<script>
+  var gitalk = new Gitalk({
+    clientID: '53d08ed58c01e3435343',
+    clientSecret: 'eab0c7dd55e3b172a798f9da9122e1d074537b2e',
+    repo: 'hiwei-zhang.github.io',
+    owner: 'hiwei-zhang',
+    admin: ['hiwei-zhang'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+  gitalk.render('gitalk-container')
+</script>
+
+          
+          
+        
+        </div>
+      </div>
+    </div>
+  </article>
+ <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <li class="list-inline-item">
+              <a href="https://hiwei-zhang.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li>
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>hiwei`s blog</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://hiwei-zhang.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://hiwei-zhang.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <script src="//instant.page/3.0.0" type="module" defer integrity="sha384-OeDn4XE77tdHo8pGtE1apMPmAipjoxUQ++eeJa6EtJCfHlvijigWiJpD7VDPWXV1"></script>
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  </body>
+</html>
+
