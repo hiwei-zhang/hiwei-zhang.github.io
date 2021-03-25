@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[Hiwei]的个人博客">
+<meta name="author" content="kveln">
+<title>spring集成websocket | Hiwei</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+<link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+<link
+  href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800'
+  rel='stylesheet' type='text/css'>
+<link rel="alternate" type="application/rss+xml" title="spring集成websocket | Hiwei » Feed"
+  href="https://hiwei-zhang.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+<link href="https://hiwei-zhang.github.io/styles/main.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/css/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="spring集成websocket" />
+  <meta property="og:url" content="https://hiwei-zhang.github.io/post/spring-ji-cheng-websocket/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Hiwei" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://hiwei-zhang.github.io">Hiwei</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">文章</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1616682181059"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://hiwei-zhang.github.io">Hiwei</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">文章</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1616682181059"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://hiwei-zhang.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+              </span>
+              <h1>spring集成websocket</h1>
+              <span class="meta">
+                Posted on
+                2021-03-25，8 min read
+              </span>
+            </div>
+          
+        
+      </div>
+    </div>
+  </div>
+</header>
+  <!-- Post Content -->
+  <article id="post-content-article">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
+          <h1 id="maven依赖">maven依赖</h1>
+<!-- websocket -->
+<pre><code>        &lt;dependency&gt;
+              &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+              &lt;artifactId&gt;spring-websocket&lt;/artifactId&gt;
+              &lt;version&gt;4.0.3.RELEASE&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+              &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+              &lt;artifactId&gt;spring-messaging&lt;/artifactId&gt;
+              &lt;version&gt;4.3.2.RELEASE&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+              &lt;groupId&gt;javax.websocket&lt;/groupId&gt;
+              &lt;artifactId&gt;javax.websocket-api&lt;/artifactId&gt;
+              &lt;version&gt;1.0&lt;/version&gt;
+              &lt;scope&gt;provided&lt;/scope&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+              &lt;groupId&gt;org.eclipse.jetty.websocket&lt;/groupId&gt;
+              &lt;artifactId&gt;websocket-server&lt;/artifactId&gt;
+              &lt;version&gt;9.3.3.v20150827&lt;/version&gt;
+              &lt;scope&gt;provided&lt;/scope&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+              &lt;groupId&gt;org.apache.tomcat.embed&lt;/groupId&gt;
+              &lt;artifactId&gt;tomcat-embed-websocket&lt;/artifactId&gt;
+              &lt;version&gt;8.0.23&lt;/version&gt;
+              &lt;scope&gt;provided&lt;/scope&gt;
+        &lt;/dependency&gt;
+</code></pre>
+<h1 id="配置入口类">配置入口类</h1>
+<p>配置WebSocket的入口,编写WebSocketConfig类实现WebSocketConfigurer 接口</p>
+<pre><code class="language-java">package com.hiwei.demo.webSocket;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
+import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
+import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
+import org.springframework.web.socket.handler.TextWebSocketHandler;
+@Configuration
+@EnableWebSocket
+@EnableWebMvc
+public class SpringWebSocketConfig implements WebSocketConfigurer {
+    @Override
+    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+        registry.addHandler(webSocketHandler(),&quot;/websocket/socketServer.do&quot;).addInterceptors(new SpringWebSocketHandlerInterceptor());
+        registry.addHandler(webSocketHandler(), &quot;/sockjs/socketServer.do&quot;).addInterceptors(new SpringWebSocketHandlerInterceptor()).withSockJS();      
+    }
+    @Bean
+    public TextWebSocketHandler webSocketHandler(){
+        return new SpringWebSocketHandler();
+    }
+}
+</code></pre>
+<h1 id="定义入口类">定义入口类</h1>
+<p>定义一个SpringWebSocketHandler类继承TextWebSocketHandler，这个类是用来处理Websocket连接建立、断开，消息发送的逻辑的，这个是消息处理的核心代码:</p>
+<pre><code class="language-java">package com.hiwei.demo.webSocket;
+import java.io.IOException;
+import java.util.HashMap;
+import org.springframework.web.socket.CloseStatus;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.handler.TextWebSocketHandler;
+public class SpringWebSocketHandler extends TextWebSocketHandler {
+ 
+    private static final HashMap&lt;String,WebSocketSession&gt; users;
+    static {
+        users = new HashMap&lt;String,WebSocketSession&gt;();
+    }
+   
+    public SpringWebSocketHandler() {
+    }
+   
+    /**
+     * 连接成功触发
+     */
+    @Override
+    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+        users.put((String) session.getAttributes().get(&quot;SESSION_USERID&quot;), session);
+        System.out.println(&quot;connect to the websocket success......当前数量:&quot;+users.size());
+        //这块会实现自己业务，比如，当用户登录后，会把离线消息推送给用户
+      TextMessage returnMessage = new TextMessage(&quot;连接成功&quot;);
+       session.sendMessage(returnMessage);
+    }
+    /**
+     * 关闭连接时触发
+     */
+    @Override
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
+        String username= (String) session.getAttributes().get(&quot;WEBSOCKET_USERNAME&quot;);
+        System.out.println(&quot;用户&quot;+username+&quot;已退出！&quot;);
+        users.remove(session.getAttributes().get(&quot;SESSION_USERID&quot;));
+        System.out.println(&quot;剩余在线用户&quot;+users.size());
+    }
+    /**
+     * js调用websocket.send时候，会调用该方法
+     */
+    @Override   
+    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+        super.handleTextMessage(session, message);
+        TextMessage returnMessage = new TextMessage(message.getPayload().toString());
+        sendMessageToUsers(returnMessage);
+    }
+    public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
+        if(session.isOpen()){session.close();}
+        users.remove(session.getAttributes().get(&quot;SESSION_USERID&quot;));
+    }
+    public boolean supportsPartialMessages() {
+        return false;
+    }
+    /**
+     * 给某个用户发送消息
+     *
+     * @param userName
+     * @param message
+     */
+    public void sendMessageToUser(String userName, TextMessage message) {
+      for (WebSocketSession user: users.values()) {
+            if (user.getAttributes().get(&quot;WEBSOCKET_USERNAME&quot;).equals(userName)) {
+                try {
+                    if (user.isOpen()) {
+                        user.sendMessage(message);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+            }
+    }
+    /**
+     * 给所有在线用户发送消息
+     *
+     * @param message
+     */
+    public void sendMessageToUsers(TextMessage message) {
+        for (WebSocketSession user : users.values()) {
+            try {
+                if (user.isOpen()) {
+                    user.sendMessage(message);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    } 
+}
+</code></pre>
+<h1 id="拦截器配置">拦截器配置</h1>
+<blockquote>
+<p>从WebSocketConfig中可以看到在注册WebSocket通道时，不仅设置了入口地址，还配置了拦截器，拦截器可以实现握手之前和之后的逻辑操作，这里配置的拦截器主要用于保存用户名以便于在Handler中定向发送消息。</p>
+</blockquote>
+<pre><code>package com.hiwei.demo.webSocket;
+import java.util.Map;
+import javax.servlet.http.HttpSession;
+import org.springframework.http.server.ServerHttpRequest;
+import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.http.server.ServletServerHttpRequest;
+import org.springframework.web.socket.WebSocketHandler;
+import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
+public class SpringWebSocketHandlerInterceptor extends HttpSessionHandshakeInterceptor {
+    @Override
+    public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler,
+            Map&lt;String, Object&gt; attributes) throws Exception {
+        if (request instanceof ServletServerHttpRequest) {
+            ServletServerHttpRequest servletRequest = (ServletServerHttpRequest) request;
+            HttpSession session = servletRequest.getServletRequest().getSession(false);
+            if (session != null) {
+                //使用userName区分WebSocketHandler，以便定向发送消息
+                String userName = (String) session.getAttribute(&quot;SESSION_USERNAME&quot;);
+                if (userName==null) {
+                    userName=&quot;default-system&quot;;
+                }
+                attributes.put(&quot;WEBSOCKET_USERNAME&quot;,userName);
+            }
+        }
+        return super.beforeHandshake(request, response, wsHandler, attributes);
+    }
+    @Override
+    public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler,
+            Exception ex) {
+        super.afterHandshake(request, response, wsHandler, ex);
+    }
+}
+</code></pre>
+<h1 id="配置websocket连接前台页面">配置Websocket连接前台页面</h1>
+<p>网页端连接Websocket和推送消息的界面就是这里</p>
+<pre><code>&lt;%@ page language=&quot;java&quot; contentType=&quot;text/html; charset=utf-8&quot;
+    pageEncoding=&quot;utf-8&quot;%&gt;
+&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=utf-8&quot;&gt;
+&lt;title&gt;消息&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://cdn.bootcss.com/sockjs-client/1.1.1/sockjs.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+    var msgDiv = document.getElementById(&quot;#msgDiv&quot;);
+    var websocket = null;
+    if ('WebSocket' in window) {
+        websocket = new WebSocket(&quot;ws://172.30.99.37:8080/springmvcMybatis/websocket/socketServer.do&quot;);
+    }
+    else if ('MozWebSocket' in window) {
+        websocket = new MozWebSocket(&quot;ws://172.30.99.37:8080/springmvcMybatis/websocket/socketServer.do&quot;);
+    }
+    else {
+        websocket = new SockJS(&quot;http://172.30.99.37:8080/springmvcMybatis/sockjs/socketServer.do&quot;);
+    }
+    websocket.onopen = onOpen;     
+    websocket.onmessage = onMessage;
+    websocket.onerror = onError;
+    websocket.onclose = onClose;
+    function onOpen(openEvt) {
+        //alert(openEvt.Data+&quot;onOpen&quot;);
+    }
+    function onMessage(evt) {
+            $('#msgDiv').val(evt.data)
+       
+            
+    }
+    function onError() {
+        alert(&quot;出错&quot;+&quot;onError&quot;);
+    }
+    function onClose() {
+        alert(&quot;关闭&quot;+&quot;onClose&quot;);
+    }
+    function doSend() {
+        if (websocket.readyState == websocket.OPEN) {         
+            var msg = document.getElementById(&quot;inputMsg&quot;).value; 
+            websocket.send(msg);
+        } else { 
+            alert(&quot;连接失败!&quot;); 
+        } 
+    }
+    window.close=function(){
+        websocket.onclose();
+    }
+&lt;/script&gt;
+&lt;body align=&quot;center&quot;&gt;
+    &lt;h3&gt;消息推送&lt;/h3&gt;
+    请输入：&lt;textarea rows=&quot;8&quot; cols=&quot;50&quot; id=&quot;inputMsg&quot; name=&quot;inputMsg&quot;&gt;&lt;/textarea&gt;
+    &lt;button onclick=&quot;doSend();&quot;&gt;发送&lt;/button&gt;
+    &lt;hr/&gt;
+    &lt;textarea rows=&quot;10&quot; cols=&quot;70&quot; id=&quot;msgDiv&quot;&gt;&lt;/textarea&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>另：web.xml中的servlet和filter中添加异步支持</p>
+<pre><code class="language-html">&lt;async-supported&gt;true&lt;/async-supported&gt;
+</code></pre>
+
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li><a href="#maven%E4%BE%9D%E8%B5%96">maven依赖</a></li>
+<li><a href="#%E9%85%8D%E7%BD%AE%E5%85%A5%E5%8F%A3%E7%B1%BB">配置入口类</a></li>
+<li><a href="#%E5%AE%9A%E4%B9%89%E5%85%A5%E5%8F%A3%E7%B1%BB">定义入口类</a></li>
+<li><a href="#%E6%8B%A6%E6%88%AA%E5%99%A8%E9%85%8D%E7%BD%AE">拦截器配置</a></li>
+<li><a href="#%E9%85%8D%E7%BD%AEwebsocket%E8%BF%9E%E6%8E%A5%E5%89%8D%E5%8F%B0%E9%A1%B5%E9%9D%A2">配置Websocket连接前台页面</a></li>
+</ul>
+</div>
+          
+          <hr />
+          <p class="next-post">下一篇：
+            <a href="https://hiwei-zhang.github.io/post/mysql-suo-yin/">
+              <span class="post-title">
+                mysql索引&rarr;
+              </span>
+            </a>
+          </p>
+          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<div id="gitalk-container"></div>
+<script>
+  var gitalk = new Gitalk({
+    clientID: '53d08ed58c01e3435343',
+    clientSecret: 'eab0c7dd55e3b172a798f9da9122e1d074537b2e',
+    repo: 'hiwei-zhang.github.io',
+    owner: 'hiwei-zhang',
+    admin: ['hiwei-zhang'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+  gitalk.render('gitalk-container')
+</script>
+
+            
+            
+            
+            
+          </div>
+        </div>
+      </div>
+  </article>
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <ul class="list-inline text-center">
+            
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              <!-- <li class="list-inline-item">
+              <a href="https://hiwei-zhang.github.io/atom.xml" target="_blank">
+                <span class="fa-stack fa-lg">
+                  <i class="fas fa-circle fa-stack-2x"></i>
+                  <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+              </a>
+              </li> -->
+          </ul>
+          <p class="copyright text-muted">Copyright &copy;<span>Hiwei</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
+        </div>
+      </div>
+    </div>
+   </footer>
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <!-- <script src="https://hiwei-zhang.github.io/media/scripts/bootstrap.bundle.min.js"></script> -->
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/gh/Alanrk/clean-cdn@1.0/scripts/clean-blog.min.js"></script>
+  <!-- <script src="https://hiwei-zhang.github.io/media/scripts/clean-blog.min.js"></script> -->
+  <script src="//instant.page/3.0.0" type="module" defer integrity="sha384-OeDn4XE77tdHo8pGtE1apMPmAipjoxUQ++eeJa6EtJCfHlvijigWiJpD7VDPWXV1"></script>
+  <style type="text/css">a.back_to_top{text-decoration:none;position:fixed;bottom:40px;right:30px;background:#f0f0f0;height:40px;width:40px;border-radius:50%;line-height:36px;font-size:18px;text-align:center;transition-duration:.5s;transition-propety:background-color;display:none}a.back_to_top span{color:#888}a.back_to_top:hover{cursor:pointer;background:#dfdfdf}a.back_to_top:hover span{color:#555}@media print,screen and(max-width:580px){.back_to_top{display:none!important}}</style>
+<a id="back_to_top" href="#" class="back_to_top">
+  <span>▲</span></a>
+<script>$(document).ready((function(_this) {
+    return function() {
+      var bt;
+      bt = $('#back_to_top');
+      if ($(document).width() > 480) {
+        $(window).scroll(function() {
+          var st;
+          st = $(window).scrollTop();
+          if (st > 30) {
+            return bt.css('display', 'block')
+          } else {
+            return bt.css('display', 'none')
+          }
+        });
+        return bt.click(function() {
+          $('body,html').animate({
+            scrollTop: 0
+          },
+          800);
+          return false
+        })
+      }
+    }
+  })(this));</script>
+  
+  <div id="landlord-parent">
+    <div id="landlord">
+        <div class="message" style="opacity:0"></div>
+        <canvas id="live2d" width="240" height="250" class="live2d"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        console.log("------ 移动端");
+    } else {
+        console.log("------ PC端 " + navigator.userAgent);
+
+        addScript("https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/js/live2d.js", () => {
+            // 加载完成后再loadlive2d
+            loadlive2d("live2d", "https://hiwei-zhang.github.io/media/live2d/assets/hijiki.model.json");
+        });
+
+        var home_Path = "https://hiwei-zhang.github.io/";
+        addScript("https://hiwei-zhang.github.io/media/live2d/js/message.js", () => { });
+    }
+
+    // 插入js文件，完成后callback
+    function addScript(jsfile, callback) {
+        var landlord_parent = document.getElementById("landlord-parent");
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = jsfile;
+        landlord_parent.appendChild(script);
+        script.onload = script.onreadystatechange = function () {
+            if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete") {
+                script.onload = script.onreadystatechange = null;
+                if (callback && typeof callback == "function") {
+                    callback(); //window[callback]();如果传递字符串过来 调用window['函数名']() 调用方法
+                }
+            }
+        };
+    }
+</script>
+  
+  <script src="https://hiwei-zhang.github.io/media/scripts/tocScript.js"></script>
+</body>
+
+</html>

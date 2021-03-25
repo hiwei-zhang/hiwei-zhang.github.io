@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://hiwei-zhang.github.io</id>
     <title>Hiwei</title>
-    <updated>2021-03-25T13:57:25.580Z</updated>
+    <updated>2021-03-25T14:23:18.118Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://hiwei-zhang.github.io"/>
     <link rel="self" href="https://hiwei-zhang.github.io/atom.xml"/>
@@ -10,6 +10,268 @@
     <logo>https://hiwei-zhang.github.io/images/avatar.png</logo>
     <icon>https://hiwei-zhang.github.io/favicon.ico</icon>
     <rights>All rights reserved 2021, Hiwei</rights>
+    <entry>
+        <title type="html"><![CDATA[spring集成websocket]]></title>
+        <id>https://hiwei-zhang.github.io/post/spring-ji-cheng-websocket/</id>
+        <link href="https://hiwei-zhang.github.io/post/spring-ji-cheng-websocket/">
+        </link>
+        <updated>2021-03-25T14:04:20.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="maven依赖">maven依赖</h1>
+<!-- websocket -->
+<pre><code>        &lt;dependency&gt;
+              &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+              &lt;artifactId&gt;spring-websocket&lt;/artifactId&gt;
+              &lt;version&gt;4.0.3.RELEASE&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+              &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+              &lt;artifactId&gt;spring-messaging&lt;/artifactId&gt;
+              &lt;version&gt;4.3.2.RELEASE&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+              &lt;groupId&gt;javax.websocket&lt;/groupId&gt;
+              &lt;artifactId&gt;javax.websocket-api&lt;/artifactId&gt;
+              &lt;version&gt;1.0&lt;/version&gt;
+              &lt;scope&gt;provided&lt;/scope&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+              &lt;groupId&gt;org.eclipse.jetty.websocket&lt;/groupId&gt;
+              &lt;artifactId&gt;websocket-server&lt;/artifactId&gt;
+              &lt;version&gt;9.3.3.v20150827&lt;/version&gt;
+              &lt;scope&gt;provided&lt;/scope&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+              &lt;groupId&gt;org.apache.tomcat.embed&lt;/groupId&gt;
+              &lt;artifactId&gt;tomcat-embed-websocket&lt;/artifactId&gt;
+              &lt;version&gt;8.0.23&lt;/version&gt;
+              &lt;scope&gt;provided&lt;/scope&gt;
+        &lt;/dependency&gt;
+</code></pre>
+<h1 id="配置入口类">配置入口类</h1>
+<p>配置WebSocket的入口,编写WebSocketConfig类实现WebSocketConfigurer 接口</p>
+<pre><code class="language-java">package com.hiwei.demo.webSocket;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
+import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
+import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
+import org.springframework.web.socket.handler.TextWebSocketHandler;
+@Configuration
+@EnableWebSocket
+@EnableWebMvc
+public class SpringWebSocketConfig implements WebSocketConfigurer {
+    @Override
+    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+        registry.addHandler(webSocketHandler(),&quot;/websocket/socketServer.do&quot;).addInterceptors(new SpringWebSocketHandlerInterceptor());
+        registry.addHandler(webSocketHandler(), &quot;/sockjs/socketServer.do&quot;).addInterceptors(new SpringWebSocketHandlerInterceptor()).withSockJS();      
+    }
+    @Bean
+    public TextWebSocketHandler webSocketHandler(){
+        return new SpringWebSocketHandler();
+    }
+}
+</code></pre>
+<h1 id="定义入口类">定义入口类</h1>
+<p>定义一个SpringWebSocketHandler类继承TextWebSocketHandler，这个类是用来处理Websocket连接建立、断开，消息发送的逻辑的，这个是消息处理的核心代码:</p>
+<pre><code class="language-java">package com.hiwei.demo.webSocket;
+import java.io.IOException;
+import java.util.HashMap;
+import org.springframework.web.socket.CloseStatus;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.handler.TextWebSocketHandler;
+public class SpringWebSocketHandler extends TextWebSocketHandler {
+ 
+    private static final HashMap&lt;String,WebSocketSession&gt; users;
+    static {
+        users = new HashMap&lt;String,WebSocketSession&gt;();
+    }
+   
+    public SpringWebSocketHandler() {
+    }
+   
+    /**
+     * 连接成功触发
+     */
+    @Override
+    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+        users.put((String) session.getAttributes().get(&quot;SESSION_USERID&quot;), session);
+        System.out.println(&quot;connect to the websocket success......当前数量:&quot;+users.size());
+        //这块会实现自己业务，比如，当用户登录后，会把离线消息推送给用户
+      TextMessage returnMessage = new TextMessage(&quot;连接成功&quot;);
+       session.sendMessage(returnMessage);
+    }
+    /**
+     * 关闭连接时触发
+     */
+    @Override
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
+        String username= (String) session.getAttributes().get(&quot;WEBSOCKET_USERNAME&quot;);
+        System.out.println(&quot;用户&quot;+username+&quot;已退出！&quot;);
+        users.remove(session.getAttributes().get(&quot;SESSION_USERID&quot;));
+        System.out.println(&quot;剩余在线用户&quot;+users.size());
+    }
+    /**
+     * js调用websocket.send时候，会调用该方法
+     */
+    @Override   
+    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+        super.handleTextMessage(session, message);
+        TextMessage returnMessage = new TextMessage(message.getPayload().toString());
+        sendMessageToUsers(returnMessage);
+    }
+    public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
+        if(session.isOpen()){session.close();}
+        users.remove(session.getAttributes().get(&quot;SESSION_USERID&quot;));
+    }
+    public boolean supportsPartialMessages() {
+        return false;
+    }
+    /**
+     * 给某个用户发送消息
+     *
+     * @param userName
+     * @param message
+     */
+    public void sendMessageToUser(String userName, TextMessage message) {
+      for (WebSocketSession user: users.values()) {
+            if (user.getAttributes().get(&quot;WEBSOCKET_USERNAME&quot;).equals(userName)) {
+                try {
+                    if (user.isOpen()) {
+                        user.sendMessage(message);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+            }
+    }
+    /**
+     * 给所有在线用户发送消息
+     *
+     * @param message
+     */
+    public void sendMessageToUsers(TextMessage message) {
+        for (WebSocketSession user : users.values()) {
+            try {
+                if (user.isOpen()) {
+                    user.sendMessage(message);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    } 
+}
+</code></pre>
+<h1 id="拦截器配置">拦截器配置</h1>
+<blockquote>
+<p>从WebSocketConfig中可以看到在注册WebSocket通道时，不仅设置了入口地址，还配置了拦截器，拦截器可以实现握手之前和之后的逻辑操作，这里配置的拦截器主要用于保存用户名以便于在Handler中定向发送消息。</p>
+</blockquote>
+<pre><code>package com.hiwei.demo.webSocket;
+import java.util.Map;
+import javax.servlet.http.HttpSession;
+import org.springframework.http.server.ServerHttpRequest;
+import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.http.server.ServletServerHttpRequest;
+import org.springframework.web.socket.WebSocketHandler;
+import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
+public class SpringWebSocketHandlerInterceptor extends HttpSessionHandshakeInterceptor {
+    @Override
+    public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler,
+            Map&lt;String, Object&gt; attributes) throws Exception {
+        if (request instanceof ServletServerHttpRequest) {
+            ServletServerHttpRequest servletRequest = (ServletServerHttpRequest) request;
+            HttpSession session = servletRequest.getServletRequest().getSession(false);
+            if (session != null) {
+                //使用userName区分WebSocketHandler，以便定向发送消息
+                String userName = (String) session.getAttribute(&quot;SESSION_USERNAME&quot;);
+                if (userName==null) {
+                    userName=&quot;default-system&quot;;
+                }
+                attributes.put(&quot;WEBSOCKET_USERNAME&quot;,userName);
+            }
+        }
+        return super.beforeHandshake(request, response, wsHandler, attributes);
+    }
+    @Override
+    public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler,
+            Exception ex) {
+        super.afterHandshake(request, response, wsHandler, ex);
+    }
+}
+</code></pre>
+<h1 id="配置websocket连接前台页面">配置Websocket连接前台页面</h1>
+<p>网页端连接Websocket和推送消息的界面就是这里</p>
+<pre><code>&lt;%@ page language=&quot;java&quot; contentType=&quot;text/html; charset=utf-8&quot;
+    pageEncoding=&quot;utf-8&quot;%&gt;
+&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=utf-8&quot;&gt;
+&lt;title&gt;消息&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://cdn.bootcss.com/sockjs-client/1.1.1/sockjs.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+    var msgDiv = document.getElementById(&quot;#msgDiv&quot;);
+    var websocket = null;
+    if ('WebSocket' in window) {
+        websocket = new WebSocket(&quot;ws://172.30.99.37:8080/springmvcMybatis/websocket/socketServer.do&quot;);
+    }
+    else if ('MozWebSocket' in window) {
+        websocket = new MozWebSocket(&quot;ws://172.30.99.37:8080/springmvcMybatis/websocket/socketServer.do&quot;);
+    }
+    else {
+        websocket = new SockJS(&quot;http://172.30.99.37:8080/springmvcMybatis/sockjs/socketServer.do&quot;);
+    }
+    websocket.onopen = onOpen;     
+    websocket.onmessage = onMessage;
+    websocket.onerror = onError;
+    websocket.onclose = onClose;
+    function onOpen(openEvt) {
+        //alert(openEvt.Data+&quot;onOpen&quot;);
+    }
+    function onMessage(evt) {
+            $('#msgDiv').val(evt.data)
+       
+            
+    }
+    function onError() {
+        alert(&quot;出错&quot;+&quot;onError&quot;);
+    }
+    function onClose() {
+        alert(&quot;关闭&quot;+&quot;onClose&quot;);
+    }
+    function doSend() {
+        if (websocket.readyState == websocket.OPEN) {         
+            var msg = document.getElementById(&quot;inputMsg&quot;).value; 
+            websocket.send(msg);
+        } else { 
+            alert(&quot;连接失败!&quot;); 
+        } 
+    }
+    window.close=function(){
+        websocket.onclose();
+    }
+&lt;/script&gt;
+&lt;body align=&quot;center&quot;&gt;
+    &lt;h3&gt;消息推送&lt;/h3&gt;
+    请输入：&lt;textarea rows=&quot;8&quot; cols=&quot;50&quot; id=&quot;inputMsg&quot; name=&quot;inputMsg&quot;&gt;&lt;/textarea&gt;
+    &lt;button onclick=&quot;doSend();&quot;&gt;发送&lt;/button&gt;
+    &lt;hr/&gt;
+    &lt;textarea rows=&quot;10&quot; cols=&quot;70&quot; id=&quot;msgDiv&quot;&gt;&lt;/textarea&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>另：web.xml中的servlet和filter中添加异步支持</p>
+<pre><code class="language-html">&lt;async-supported&gt;true&lt;/async-supported&gt;
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[mysql索引]]></title>
         <id>https://hiwei-zhang.github.io/post/mysql-suo-yin/</id>
