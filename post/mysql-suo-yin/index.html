@@ -1,104 +1,177 @@
 <!DOCTYPE html>
 <html>
-  <head>
-      <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta content="yes" name="apple-mobile-web-app-capable" />
-  <meta content="black" name="apple-mobile-web-app-status-bar-style" />
-  <meta name="referrer" content="never">
-  <meta name="keywords" content="">
-  <meta name="description" content="">
-  <meta name="author" content="kveln">
-  <title>mysql索引 | hiwei`s blog</title>
-  <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
-  <!-- <link href="https://hiwei-zhang.github.io/media/css/bootstrap.min.css" rel="stylesheet"> -->
-  <!--  <link href="https://hiwei-zhang.github.io/media/css/all.min.css" rel="stylesheet" type="text/css"> -->
-  <link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
-  <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
-  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
-  <link rel="alternate" type="application/rss+xml" title="mysql索引 | hiwei`s blog » Feed" href="https://hiwei-zhang.github.io/atom.xml">
-  <link rel="stylesheet"href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
-  <link href="https://hiwei-zhang.github.io/styles/main.css" rel="stylesheet">
-  <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/highlight.min.js"></script>
-  <!-- <script src="https://hiwei-zhang.github.io/media/scripts/jquery.min.js"></script> -->
-  <script>hljs.initHighlightingOnLoad();</script>
-  
 
-    <meta property="og:description" content="mysql索引"/>
-    <meta property="og:url" content="https://hiwei-zhang.github.io/post/mysql-suo-yin/"/>
-    <meta property="og:locale" content="zh-CN"/>
-    <meta property="og:type" content="website"/>
-    <meta property="og:site_name" content="hiwei`s blog"/>
-  </head>
-  <body>
-  	<!-- Navigation -->
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="referrer" content="never">
+<meta name="keywords" content="">
+<meta name="description" content="欢迎访问[hiwei`s blog]的个人博客">
+<meta name="author" content="kveln">
+<title>mysql索引 | hiwei`s blog</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+<link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+<link
+  href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800'
+  rel='stylesheet' type='text/css'>
+<link rel="alternate" type="application/rss+xml" title="mysql索引 | hiwei`s blog » Feed"
+  href="https://hiwei-zhang.github.io/atom.xml">
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
+<link href="https://hiwei-zhang.github.io/styles/main.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/850552586/ericamcdn@0.1/css/live2d.css">
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+  <meta property="og:description" content="mysql索引" />
+  <meta property="og:url" content="https://hiwei-zhang.github.io/post/mysql-suo-yin/" />
+  <meta property="og:locale" content="zh-CN" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="hiwei`s blog" />
+  <!-- <script src="../assets/styles/scripts/tocScript.js"></script> -->
+</head>
+
+<body>
+  <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
-    <div class="container">
-      <a class="navbar-brand" href="https://hiwei-zhang.github.io">hiwei`s blog</a>
-      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-        Menu
-        <i class="fas fa-bars"></i>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarResponsive">
-        <ul class="navbar-nav ml-auto">
+  <div class="container">
+    <a class="navbar-brand" href="https://hiwei-zhang.github.io">hiwei`s blog</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
           
-          <li class="nav-item">
-              
-              <a class="nav-link" href="/">首页</a>
-              
-          </li>
+          <a class="nav-link" href="/">首页</a>
           
-          <li class="nav-item">
-              
-              <a class="nav-link" href="/archives">文章</a>
-              
-          </li>
+        </li>
+        
+        <li class="nav-item">
           
-          <li class="nav-item">
-              
-              <a class="nav-link" href="/tags">标签</a>
-              
-          </li>
+          <a class="nav-link" href="/archives">文章</a>
           
-          <li class="nav-item">
-              
-              <a class="nav-link" href="/post/about">关于</a>
-              
-          </li>
+        </li>
+        
+        <li class="nav-item">
           
-        </ul>
-      </div>
-    </div>
-  </nav>
-  <!-- Page Header -->
-  <header class="masthead" style="background-image: url('https://hiwei-zhang.github.io/media/images/home-bg.jpg')">
-    <div class="overlay"></div>
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-8 col-md-10 mx-auto">
-          <div class="post-heading">
-          	<span class="tags">
-          	 
-            <a href="https://hiwei-zhang.github.io/tag/cm1q2Sn_0/" class="tag">mysql</a>
-            
-        </span>
-            <h1>mysql索引</h1>
-            <span class="meta">
-            	Posted on
-              2021-03-24，34 min read
-            </span>
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1616677871996"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
           </div>
-        </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!-- Page Header -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="https://hiwei-zhang.github.io">hiwei`s blog</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/">首页</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/archives">文章</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/tags">标签</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          
+          <a class="nav-link" href="/post/about">关于</a>
+          
+        </li>
+        
+        <li class="nav-item">
+          <div class="gridea-search-container">
+            <form id="gridea-search-form" style="position: relative" data-update="1616677871996"
+              action="/search/index.html">
+              <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
+              <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
+            </form>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header class="masthead" style="background-image: url('https://hiwei-zhang.github.io/media/images/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        
+          <!-- 没Title为其他页面Header -->
+          
+            <!-- 没Title并且有headerType为Post：文章Header -->
+            <div class="post-heading">
+              <span class="tags">
+                
+                <a href="https://hiwei-zhang.github.io/tag/cm1q2Sn_0/" class="tag">mysql</a>
+                
+              </span>
+              <h1>mysql索引</h1>
+              <span class="meta">
+                Posted on
+                2021-03-24，34 min read
+              </span>
+            </div>
+          
+        
       </div>
     </div>
-  </header>
-
+  </div>
+</header>
   <!-- Post Content -->
-  <article>
+  <article id="post-content-article">
     <div class="container">
       <div class="row">
-        <div class="col-lg-8 col-md-10 mx-auto">
+        <div class="col-lg-8 col-md-10 mx-auto post-content-container">
+          
           <p>[TOC]</p>
 <h2 id="索引">索引</h2>
 <h4 id="索引是谁实现的">索引是谁实现的？</h4>
@@ -751,7 +824,186 @@ Innodb_buffer_pool_size = （总物理内存 - 系统运行所用 - connection �
 undo_log是事务回滚<br>
 redo_log是崩溃恢复</p>
 
+          <div class="toc-container"><ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E7%B4%A2%E5%BC%95">索引</a><br>
+*
+<ul>
+<li><a href="#%E7%B4%A2%E5%BC%95%E6%98%AF%E8%B0%81%E5%AE%9E%E7%8E%B0%E7%9A%84">索引是谁实现的？</a></li>
+<li><a href="#%E7%B4%A2%E5%BC%95%E6%98%AF%E4%BB%80%E4%B9%88">索引是什么？</a></li>
+<li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%94%A8%E7%B4%A2%E5%BC%95">为什么要用索引？</a></li>
+<li><a href="#%E4%BA%8C%E5%8F%89%E6%A0%91">二叉树</a>
+<ul>
+<li><a href="#%E4%BA%8C%E5%8F%89%E6%9F%A5%E6%89%BE%E6%A0%91binary-search-tree">二叉查找树（Binary Search Tree）</a></li>
+<li><a href="#%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%9F%A5%E6%89%BE%E6%A0%91balanced-binary-tree">平衡二叉查找树（Balanced Binary Tree）</a></li>
+<li><a href="#%E5%A4%9A%E8%B7%AF%E5%B9%B3%E8%A1%A1%E6%9F%A5%E6%89%BE%E6%A0%91b-treebalance-tree">多路平衡查找树B-Tree（balance tree）</a></li>
+<li><a href="#%E5%8A%A0%E5%BC%BA%E7%89%88%E7%9A%84%E5%A4%9A%E8%B7%AF%E5%B9%B3%E8%A1%A1%E6%9F%A5%E6%89%BE%E6%A0%91btree">加强版的多路平衡查找树B+Tree</a>
+<ul>
+<li><a href="#btree%E4%B8%8Eb-tree%E7%9A%84%E5%8C%BA%E5%88%AB">B+Tree与B-Tree的区别：</a></li>
+<li><a href="#btree%E7%9A%84%E4%BC%98%E7%82%B9">B+Tree的优点：</a></li>
+</ul>
+</li>
+<li><a href="#mysql-btree%E7%B4%A2%E5%BC%95%E4%BD%93%E7%8E%B0%E5%BD%A2%E5%BC%8F">Mysql B+Tree索引体现形式</a>
+<ul>
+<li><a href="#myisam%E4%B8%ADbtree">MyISAM中B+Tree</a></li>
+<li><a href="#innodb%E4%B8%ADbtree">InnoDB中B+Tree</a></li>
+<li><a href="#innodb-vs-myisam">InnoDB VS MyISAM</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E7%B4%A2%E5%BC%95%E7%9F%A5%E8%AF%86">索引知识</a>
+<ul>
+<li><a href="#%E5%88%97%E7%9A%84%E7%A6%BB%E6%95%A3%E6%80%A7">列的离散性</a></li>
+<li><a href="#%E6%9C%80%E5%B7%A6%E5%8C%B9%E9%85%8D%E5%8E%9F%E5%88%99">最左匹配原则</a></li>
+<li><a href="#%E8%81%94%E5%90%88%E7%B4%A2%E5%BC%95">联合索引</a>
+<ul>
+<li><a href="#%E6%9D%8E%E4%BA%8C%E7%8B%97%E7%9A%84sql%E4%BC%98%E5%8C%96">李二狗的sql优化</a></li>
+</ul>
+</li>
+<li><a href="#%E8%A6%86%E7%9B%96%E7%B4%A2%E5%BC%95">覆盖索引</a></li>
+<li><a href="#%E6%80%BB%E7%BB%93">总结</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E">存储引擎</a><br>
+*
+<ul>
+<li><a href="#%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E4%BB%8B%E7%BB%8D">存储引擎介绍</a></li>
+<li><a href="#csv%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8Ecomma-separated-values%E4%BA%86%E8%A7%A3">CSV存储引擎（Comma-Separated Values）了解</a></li>
+<li><a href="#archive%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E5%8E%8B%E7%BC%A9%E4%BA%86%E8%A7%A3">Archive存储引擎（压缩）了解</a>
+<ul>
+<li><a href="#%E7%89%B9%E7%82%B9">特点：</a></li>
+<li><a href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF">应用场景：</a></li>
+</ul>
+</li>
+<li><a href="#memory%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E-%E4%BA%86%E8%A7%A3">Memory存储引擎  了解</a>
+<ul>
+<li><a href="#%E7%89%B9%E7%82%B9-2">特点：</a></li>
+<li><a href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF-2">应用场景：</a></li>
+</ul>
+</li>
+<li><a href="#myisam%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E">MyISAM存储引擎</a>
+<ul>
+<li><a href="#%E7%89%B9%E7%82%B9-3">特点：</a></li>
+</ul>
+</li>
+<li><a href="#innodb-%E9%87%8D%E7%82%B9">InnoDB  重点</a>
+<ul>
+<li><a href="#%E7%89%B9%E7%82%B9-4">特点</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#mysql%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84">mysql体系结构</a>
+<ul>
+<li><a href="#mysql%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96%E8%AF%A6%E8%A7%A3">mysql查询优化详解</a>
+<ul>
+<li><a href="#mysql%E6%9F%A5%E8%AF%A2%E6%89%A7%E8%A1%8C%E8%B7%AF%E5%BE%84">mysql查询执行路径</a>
+<ul>
+<li><a href="#mysql-%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%80%9A%E4%BF%A1">mysql 客户端/服务端通信</a>
+<ul>
+<li><a href="#mysql-%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%80%9A%E4%BF%A1%E7%8A%B6%E6%80%81%E6%9F%A5%E8%AF%A2">mysql 客户端/服务端通信状态查询</a></li>
+</ul>
+</li>
+<li><a href="#%E6%9F%A5%E8%AF%A2%E7%BC%93%E5%AD%98">查询缓存</a></li>
+<li><a href="#%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96%E5%A4%84%E7%90%86">查询优化处理</a></li>
+<li><a href="#%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96%E5%99%A8%E5%A6%82%E4%BD%95%E6%89%BE%E5%88%B0%E6%9C%80%E4%BC%98%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92">查询优化器如何找到最优执行计划？</a></li>
+<li><a href="#mysql%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96-%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92">mysql查询优化-执行计划</a>
+<ul>
+<li><a href="#%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92-id">执行计划-id</a></li>
+<li><a href="#%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92-select_type">执行计划-select_type</a></li>
+<li><a href="#%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92-table">执行计划-table</a></li>
+<li><a href="#%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92-type">执行计划-type</a></li>
+<li><a href="#%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92%E5%85%B6%E5%AE%83%E5%B1%9E%E6%80%A7">执行计划其它属性</a></li>
+<li><a href="#%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92-extra">执行计划-Extra</a></li>
+</ul>
+</li>
+<li><a href="#%E6%89%A7%E8%A1%8C%E5%BC%95%E6%93%8E%E6%89%A7%E8%A1%8C">执行引擎执行</a></li>
+<li><a href="#%E8%BF%94%E5%9B%9E%E5%AE%A2%E6%88%B7%E7%AB%AF">返回客户端</a></li>
+</ul>
+</li>
+<li><a href="#%E5%AE%9A%E4%BD%8D%E6%85%A2sql">定位慢sql</a>
+<ul>
+<li><a href="#%E6%85%A2%E6%9F%A5%E8%AF%A2%E6%97%A5%E5%BF%97%E9%85%8D%E7%BD%AE">慢查询日志配置</a></li>
+<li><a href="#%E6%85%A2%E6%9F%A5%E8%AF%A2%E6%97%A5%E5%BF%97%E5%88%86%E6%9E%90">慢查询日志分析</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8B%E5%8A%A1">事务</a>
+<ul>
+<li><a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E4%BA%8B%E5%8A%A1">什么是事务</a></li>
+<li><a href="#%E4%BA%8B%E5%8A%A1acid%E7%89%B9%E6%80%A7">事务ACID特性</a></li>
+<li><a href="#%E4%BA%8B%E5%8A%A1%E5%B9%B6%E5%8F%91%E5%B8%A6%E6%9D%A5%E7%9A%84%E9%97%AE%E9%A2%98">事务并发带来的问题</a>
+<ul>
+<li><a href="#%E8%84%8F%E8%AF%BB%E8%AF%BB%E6%9C%AA%E6%8F%90%E4%BA%A4">脏读——读未提交</a></li>
+<li><a href="#%E4%B8%8D%E5%8F%AF%E9%87%8D%E5%A4%8D%E8%AF%BB%E8%AF%BB%E5%B7%B2%E6%8F%90%E4%BA%A4">不可重复读——读已提交</a></li>
+<li><a href="#%E5%B9%BB%E8%AF%BB">幻读</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8B%E5%8A%A1%E5%9B%9B%E7%A7%8D%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB">事务四种隔离级别</a>
+<ul>
+<li><a href="#read-uncommit-%E8%AF%BB%E6%9C%AA%E6%8F%90%E4%BA%A4">Read Uncommit (读未提交)</a></li>
+<li><a href="#read-commit%E8%AF%BB%E5%B7%B2%E6%8F%90%E4%BA%A4">Read Commit（读已提交）</a></li>
+<li><a href="#repeatable-read-%E5%8F%AF%E9%87%8D%E5%A4%8D%E8%AF%BB">Repeatable Read (可重复读)</a></li>
+<li><a href="#serializable%E4%B8%B2%E8%A1%8C%E5%8C%96">Serializable（串行化）</a></li>
+</ul>
+</li>
+<li><a href="#innodb%E5%AF%B9%E5%9B%9B%E7%A7%8D%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB%E7%9A%84%E6%94%AF%E6%8C%81%E7%A8%8B%E5%BA%A6">InnoDB对四种隔离级别的支持程度</a></li>
+</ul>
+</li>
+<li><a href="#%E9%94%81">锁</a>
+<ul>
+<li><a href="#%E7%90%86%E8%A7%A3%E8%A1%A8%E9%94%81%E5%92%8C%E8%A1%8C%E9%94%81">理解表锁和行锁</a></li>
+<li><a href="#mysql-innodb%E9%94%81%E7%B1%BB%E5%9E%8B">mysql InnoDB锁类型</a>
+<ul>
+<li><a href="#%E5%85%B1%E4%BA%AB%E9%94%81%E5%92%8C%E6%8E%92%E5%AE%83%E9%94%81">共享锁和排它锁</a></li>
+<li><a href="#innodb%E8%A1%8C%E9%94%81%E5%88%B0%E5%BA%95%E9%94%81%E4%BA%86%E4%BB%80%E4%B9%88">InnoDB行锁到底锁了什么？</a></li>
+<li><a href="#%E6%84%8F%E5%90%91%E9%94%81%E5%85%B1%E4%BA%AB%E9%94%81is%E5%92%8C%E6%84%8F%E5%90%91%E9%94%81%E6%8E%92%E5%AE%83%E9%94%81ix">意向锁共享锁（IS）和意向锁排它锁（IX）</a></li>
+<li><a href="#%E8%87%AA%E5%A2%9E%E9%94%81">自增锁</a></li>
+<li><a href="#%E4%B8%B4%E9%94%AE%E9%94%81next-key%E9%97%B4%E9%9A%99%E9%94%81gap%E8%AE%B0%E5%BD%95%E9%94%81recoed">临键锁（Next-key）&amp;间隙锁（Gap）&amp;记录锁（Recoed）</a>
+<ul>
+<li><a href="#%E4%B8%B4%E9%94%AE%E9%94%81">临键锁</a></li>
+<li><a href="#%E9%97%B4%E9%9A%99%E9%94%81">间隙锁</a></li>
+<li><a href="#%E8%AE%B0%E5%BD%95%E9%94%81">记录锁</a></li>
+</ul>
+</li>
+<li><a href="#%E5%88%A9%E7%94%A8%E9%94%81%E6%80%8E%E4%B9%88%E8%A7%A3%E5%86%B3%E4%BA%8B%E5%8A%A1%E9%97%AE%E9%A2%98">利用锁怎么解决事务问题？</a></li>
+<li><a href="#%E6%AD%BB%E9%94%81%E4%BB%8B%E7%BB%8D">死锁介绍</a></li>
+<li><a href="#%E6%AD%BB%E9%94%81%E7%9A%84%E9%81%BF%E5%85%8D">死锁的避免</a></li>
+</ul>
+</li>
+<li><a href="#mvcc%E6%98%AF%E4%BB%80%E4%B9%88">MVCC是什么？</a></li>
+<li><a href="#undo-log">Undo log</a>
+<ul>
+<li><a href="#%E5%BD%93%E5%89%8D%E8%AF%BB%E5%92%8C%E5%BF%AB%E7%85%A7%E8%AF%BB">当前读和快照读</a></li>
+</ul>
+</li>
+<li><a href="#redo-log">Redo log</a></li>
+</ul>
+</li>
+<li><a href="#%E9%85%8D%E7%BD%AE%E4%BC%98%E5%8C%96">配置优化</a>
+<ul>
+<li><a href="#mysql%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%8F%82%E6%95%B0">mysql服务器参数</a>
+<ul>
+<li><a href="#%E5%85%A8%E5%B1%80%E6%96%87%E4%BB%B6%E9%85%8D%E7%BD%AE">全局文件配置</a></li>
+</ul>
+</li>
+<li><a href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E8%AE%BE%E8%AE%A1">数据库表设计</a></li>
+<li><a href="#%E6%97%A5%E5%BF%97">日志</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
           
+          <hr />
           <p class="next-post">下一篇：
             <a href="https://hiwei-zhang.github.io/post/servlet-jie-xi/">
               <span class="post-title">
@@ -759,10 +1011,12 @@ redo_log是崩溃恢复</p>
               </span>
             </a>
           </p>
-        
-        <div class="comment">
           
-          
+          <div class="comment" style="text-align: center;">
+            
+
+            
+            
             <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
 <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
 <div id="gitalk-container"></div>
@@ -779,14 +1033,15 @@ redo_log是崩溃恢复</p>
   gitalk.render('gitalk-container')
 </script>
 
-          
-          
-        
+            
+            
+            
+            
+          </div>
         </div>
       </div>
-    </div>
   </article>
- <!-- Footer -->
+  <!-- Footer -->
   <footer>
     <div class="container">
       <div class="row">
@@ -807,14 +1062,14 @@ redo_log是崩溃恢复</p>
               
             
               
-              <li class="list-inline-item">
+              <!-- <li class="list-inline-item">
               <a href="https://hiwei-zhang.github.io/atom.xml" target="_blank">
                 <span class="fa-stack fa-lg">
                   <i class="fas fa-circle fa-stack-2x"></i>
                   <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
                 </span>
               </a>
-              </li>
+              </li> -->
           </ul>
           <p class="copyright text-muted">Copyright &copy;<span>hiwei`s blog</span><br><a href="https://github.com/getgridea/gridea" class="Themeinfo">Powered by Gridea</a></p>
         </div>
@@ -855,6 +1110,8 @@ redo_log是崩溃恢复</p>
       }
     }
   })(this));</script>
-  </body>
-</html>
+  
+  <script src="https://hiwei-zhang.github.io/media/scripts/tocScript.js"></script>
+</body>
 
+</html>
