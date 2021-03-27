@@ -82,8 +82,18 @@
 
 	//获取博客全文api
 	function getContents(callback) {
-		localStorage.setItem("ContentsCache", "");
-
+		var caches = checkCache();
+		if (caches) {
+			callback(caches.contents);
+		} else {
+			ajax({
+				url: "../api-content/index.html" + "?_=" + Date.now(),
+				success: function (data) {
+					callback(JSON.parse(data));
+					localStorage.setItem("ContentsCache", data);
+				},
+			});
+		}
 	}
 
 	//获取博客信息api
