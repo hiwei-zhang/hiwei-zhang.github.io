@@ -82,18 +82,8 @@
 
 	//获取博客全文api
 	function getContents(callback) {
-		var caches = checkCache();
-		if (caches) {
-			callback(caches.contents);
-		} else {
-			ajax({
-				url: "../api-content/index.html" + "?_=" + Date.now(),
-				success: function (data) {
-					callback(JSON.parse(data));
-					localStorage.setItem("ContentsCache", data);
-				},
-			});
-		}
+		localStorage.setItem("ContentsCache", "");
+
 	}
 
 	//获取博客信息api
