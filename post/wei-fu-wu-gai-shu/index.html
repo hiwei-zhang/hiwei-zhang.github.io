@@ -10,14 +10,14 @@
 <meta name="keywords" content="">
 <meta name="description" content="欢迎访问[Hiwei]的个人博客">
 <meta name="author" content="kveln">
-<title>servlet解析 | Hiwei</title>
+<title>微服务概述 | Hiwei</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
 <link href="https://cdn.bootcss.com/font-awesome/5.11.2/css/all.min.css" rel="stylesheet">
 <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
 <link
   href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800'
   rel='stylesheet' type='text/css'>
-<link rel="alternate" type="application/rss+xml" title="servlet解析 | Hiwei » Feed"
+<link rel="alternate" type="application/rss+xml" title="微服务概述 | Hiwei » Feed"
   href="https://hiwei-zhang.github.io/atom.xml">
 <link rel="stylesheet"
   href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.15.10/build/styles/androidstudio.min.css">
@@ -30,8 +30,8 @@
 
 <script>hljs.initHighlightingOnLoad();</script>
 
-  <meta property="og:description" content="servlet解析" />
-  <meta property="og:url" content="https://hiwei-zhang.github.io/post/servlet-jie-xi/" />
+  <meta property="og:description" content="微服务概述" />
+  <meta property="og:url" content="https://hiwei-zhang.github.io/post/wei-fu-wu-gai-shu/" />
   <meta property="og:locale" content="zh-CN" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Hiwei" />
@@ -151,13 +151,11 @@
             <div class="post-heading">
               <span class="tags">
                 
-                <a href="https://hiwei-zhang.github.io/tag/hvm8rzTF-/" class="tag">java</a>
-                
               </span>
-              <h1>servlet解析</h1>
+              <h1>微服务概述</h1>
               <span class="meta">
                 Posted on
-                2017-01-06，2 min read
+                2021-03-27，6 min read
               </span>
             </div>
           
@@ -172,54 +170,69 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto post-content-container">
           
-          <img class="post-feature-header-image" src="https://hiwei-zhang.github.io/post-images/servlet-jie-xi.jpeg" alt="封面图">
-          </img>
-          
-          <p>servlet相关知识点</p>
-<!-- more -->
-<h4 id="servlet特征">servlet特征</h4>
+          <h1 id="架构的演变">架构的演变</h1>
+<h2 id="单体架构">单体架构</h2>
 <ol>
-<li>servlet是单例多线程的。</li>
-<li>一个servlet实例只会执行一次无参构造器与init()方法，并且是在第一次访问时执行。</li>
-<li>用户每提交一次对当前servlet的请求，就会执行一次service()方法。</li>
-<li>一个servlet实例只会执行一次destroy()方法，在应用停止时执行。</li>
-<li>由于servlet是单例多线程的，所以为了保证其线程安全性，一般情况下是不为servlet类定义可修改的成员变量的。因为每个线程均可修改这个成员变量，会出现线程安全问题。</li>
-<li>默认情况下，servlet在web容器启动时是不会被实例化的。</li>
+<li>什么是单体架构？<br>
+一个程序包（war/jar）包含了应用所有功能的应用程序。这样的架构方法论，称之为单体架构。</li>
+<li>单体架构示意图<br>
+<img src="https://hiwei-zhang.github.io/post-images/1616817865142.jpg" alt="" loading="lazy"></li>
+<li>单体架构缺陷</li>
 </ol>
-<h4 id="由genericservlet看java的多态">由GenericServlet看java的多态</h4>
-<p>  java程序的运行分为编译器和运行期。运行期的类型绑定称之为动态绑定。<br>
-  在GenericServlet中实现了init(ServletConfig config)方法：</p>
-<pre><code>@Override
-public void init(ServletConfig config) throws ServletException {    
-    this.config = config;    
-    this.init();
-}
-</code></pre>
-<p>但是GenericServlet的子类也可能需要实现init(ServletConfig config)方法，在子类实现该方法的时候如果未调用super.init(config)方法，则会导致ServletConfig初始化失败。<br>
-所以GenericServlet添加了重载方法init()交给子类实现。</p>
-<pre><code>public void init() throws ServletException {   
-    // NOOP by default
-   }
-</code></pre>
-<p>子类只需要实现init()方法，只需要关注自身业务实现即可。实现了代码的解耦。这里所用到的就是java的多态。</p>
+<ul>
+<li>复杂性高。整个项目包含的模块都耦合在一起，模块的边界模糊，依赖关系不清晰。当业务过于复杂和模块过多的时候，整个项目变得异常复杂，每次修改代码都心惊胆战，甚至修改一个bug会产生多个隐藏bug。</li>
+<li>会产生技术债务。随着时间的推移、需求变更和人员更迭，会逐渐形成应用程序的技术债务，并且越积越多。已使用的系统设计或代码难以修改，因为整个应用程序间的模块调用链路不清晰，随意修改可能会产生意想不到错误。</li>
+<li>扩展能力受限。单体应用只能作为一个整体扩展，各模块无法结合自身业务体量进行伸缩部署。</li>
+<li>阻碍技术创新。单体应用往往使用统一的技术框架和方案解决所有问题，团队的每个开发成员都必须使用相同的语言和架构，要想引入新的框架和技术非常难。<br>
+  由于单体架构的缺陷在业务体量日益增长的情况下越来越突出，所以越来越多的公司采用微服务架构解决上述问题。</li>
+</ul>
+<h2 id="集群架构">集群架构</h2>
+<p>  在用户量不断增加的时候，单体架构下服务器的压力越来越大，所以可能导致整个系统的性能达不到要求，这时就需要提升系统承受能力。可以提升服务器硬件性能达到目的，但是这样并不划算。所以集群架构就出现了。<br>
+<img src="https://hiwei-zhang.github.io/post-images/1616840919922.png" alt="" loading="lazy"></p>
+<h2 id="soa架构">SOA架构</h2>
+<p>  虽然集群架构可以提升并行处理能力和达到系统高可用的目的，但是把所有的业务都放到一个war中来管理，对于代码的维护和扩展时非常困难的。而且如果某个业务功能出现故障的时候，可能导致整个系统都不可用。所以这个时候就是要降低业务之间的耦合度，提升系统的容错性。这时就可以以业务的维度对系统进行垂直拆分。简单来说，就是根据业务将系统拆分为多个模块。例如电商网站，会拆分为：首页、订单、支付、商品、搜索等多个模块。我之前做过的国家电网的综合能源项目就拆分为：全景大厅、运行监测、运维管理、人员管理、设备管理、告警管理等子系统。每个子系统交由一个小开发团队负责。<br>
+<img src="https://hiwei-zhang.github.io/post-images/1616841006671.png" alt="" loading="lazy"><br>
+  随着对业务系统进行垂直化改造之后，以业务功能纬度拆分出来多个子系统，而在各个子系 统中，会存在比较多的共享业务，比如用户信息查询，在支付业务中会涉及到、在首页中也 会涉及到。那么势必会造成重复开发产生非常多的冗余代码。那么这个时候就引入了服务化 改造的思想，也就是SOA把一些通用的、会被多个上层服务调用的模块独立拆分出来，形成一些共享的基础服务。这 些被拆分出来的共享服务相对来说是比较独立，并且可重用。 比如用户管理服务，包含用户 注册、用户查询等功能。比如单点登录服务； SOA的核心目标就是通过服务的流程化来实现业务的灵活性，而这个流程化其实就是一系列 相关联的任务组成，这一系列相关联的任务可以通过一系列的服务组合来实现具体的业务功 能 SOA面向服务架构，从语义上说，它与面向过程、面向对象、面向组件一样，是一种软件组 建及开发的方式。所以在SOA中，服务是最核心的抽象手段，业务被划分为一些列粗粒度的业务服务和业务流程 。<br>
+  SOA中更强调ESB企业服务总线，企业服务总线可以使得服务之间的交互是动态的，以及服 务位置是透明的。这样的好处是服务的调用者和服务的提供者之间是高度解耦的。从而使得 服务有更高的灵活性以及隔离性。<br>
+ESB： 是从面相服务架构(SOA)发展过来的，主要是对多个系统中的服务调用者和服务提供 者的解耦。ESB本身提供了服务暴露、接入、协议转化、数据格式转化、路由等功能。   SOA主要解决的问题：</p>
+<ol>
+<li>信息孤岛</li>
+<li>互联互通</li>
+<li>业务重用</li>
+</ol>
+<h2 id="微服务架构">微服务架构</h2>
+<p>  微服务并不是一种新思想的方法。它更像是一种思想的精炼，是一种服务化思想的最佳实践 方向而已，所以我认为微服务其实是在SOA思路下，随着各个企业对于服务化治理上不断的 完善，以及对软件的交付链路以及基础设施逐步成熟之下的一种自然的产物。 微服务也是一 种面向服务的架构模型，只是它更强调服务的粒度。也就是服务的职责更加单一更加精炼 我们也可以把SOA看成是微服务的超集。 也就是多个微服务可以组成一个soa服务。</p>
+<ul>
+<li>SOA与微服务区别：</li>
+</ul>
+<ol>
+<li>SOA关注的是服务的重用性，和解决企业服务信息孤岛的问题。</li>
+<li>微服务关注的是解耦。微服务关注降低业务之间的耦合度（服务粒度），而可重用性关注的是服务的复用。</li>
+<li>微服务会使用更轻量级的通信协议，使用Restful风格的API。轻量级协议可以很好的支持 跨语言，是的语言生态更加丰富。</li>
+<li>微服务会更多的关注Devops的持续交付，因为服务粒度更细使得开发运维变得更加重要。 所以微服务对于容器化技术的结合更加紧密。</li>
+<li>SOA应该是微服务的超集。</li>
+</ol>
 
           <div class="toc-container"><ul class="markdownIt-TOC">
-<li>
+<li><a href="#%E6%9E%B6%E6%9E%84%E7%9A%84%E6%BC%94%E5%8F%98">架构的演变</a>
 <ul>
-<li>
-<ul>
-<li>
-<ul>
-<li><a href="#servlet%E7%89%B9%E5%BE%81">servlet特征</a></li>
-<li><a href="#%E7%94%B1genericservlet%E7%9C%8Bjava%E7%9A%84%E5%A4%9A%E6%80%81">由GenericServlet看java的多态</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li><a href="#%E5%8D%95%E4%BD%93%E6%9E%B6%E6%9E%84">单体架构</a></li>
+<li><a href="#%E9%9B%86%E7%BE%A4%E6%9E%B6%E6%9E%84">集群架构</a></li>
+<li><a href="#soa%E6%9E%B6%E6%9E%84">SOA架构</a></li>
+<li><a href="#%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84">微服务架构</a></li>
 </ul>
 </li>
 </ul>
 </div>
+          
+          <hr />
+          <p class="next-post">下一篇：
+            <a href="https://hiwei-zhang.github.io/post/spring-ji-cheng-websocket/">
+              <span class="post-title">
+                spring集成websocket&rarr;
+              </span>
+            </a>
+          </p>
           
           <div class="comment" style="text-align: center;">
             
