@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://hiwei-zhang.github.io</id>
     <title>Hiwei</title>
-    <updated>2021-03-27T10:45:20.344Z</updated>
+    <updated>2021-03-27T10:58:29.530Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://hiwei-zhang.github.io"/>
     <link rel="self" href="https://hiwei-zhang.github.io/atom.xml"/>
@@ -10,6 +10,31 @@
     <logo>https://hiwei-zhang.github.io/images/avatar.png</logo>
     <icon>https://hiwei-zhang.github.io/favicon.ico</icon>
     <rights>All rights reserved 2021, Hiwei</rights>
+    <entry>
+        <title type="html"><![CDATA[代理模式]]></title>
+        <id>https://hiwei-zhang.github.io/post/dai-li-mo-shi/</id>
+        <link href="https://hiwei-zhang.github.io/post/dai-li-mo-shi/">
+        </link>
+        <updated>2021-03-27T10:55:42.000Z</updated>
+        <summary type="html"><![CDATA[<p>代理模式详解及demo</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>代理模式详解及demo</p>
+<!-- more -->
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[单例模式]]></title>
+        <id>https://hiwei-zhang.github.io/post/dan-li-mo-shi/</id>
+        <link href="https://hiwei-zhang.github.io/post/dan-li-mo-shi/">
+        </link>
+        <updated>2021-03-27T10:47:48.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="懒汉式单例">懒汉式单例</h1>
+<p>懒汉式比较懒，会在用到的时候才创建。</p>
+<h1 id="饿汉式">饿汉式</h1>
+<p>饿汉比较饥饿，初始化的时候就会创建对象实例。</p>
+<h1 id="容器注册式">容器注册式</h1>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[微服务概述]]></title>
         <id>https://hiwei-zhang.github.io/post/wei-fu-wu-gai-shu/</id>
