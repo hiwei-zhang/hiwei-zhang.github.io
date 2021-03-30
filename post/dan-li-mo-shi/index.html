@@ -78,7 +78,7 @@
         
        <!--  <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1616842593348"
+            <form id="gridea-search-form" style="position: relative" data-update="1617114572045"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -128,7 +128,7 @@
         
        <!--  <li class="nav-item">
           <div class="gridea-search-container">
-            <form id="gridea-search-form" style="position: relative" data-update="1616842593348"
+            <form id="gridea-search-form" style="position: relative" data-update="1617114572045"
               action="/search/index.html">
               <input class="search-input" autocomplete="off" spellcheck="false" name="q" placeholder="搜索文章" />
               <i class="fas fa-search gt-c-content-color-first" style="position: absolute; top: 9px; left: 10px;"></i>
@@ -157,7 +157,7 @@
               <h1>单例模式</h1>
               <span class="meta">
                 Posted on
-                2021-03-27，1 min read
+                2021-03-27，7 min read
               </span>
             </div>
           
@@ -172,15 +172,242 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto post-content-container">
           
-          <h1 id="懒汉式单例">懒汉式单例</h1>
-<p>懒汉式比较懒，会在用到的时候才创建。</p>
-<h1 id="饿汉式">饿汉式</h1>
-<p>饿汉比较饥饿，初始化的时候就会创建对象实例。</p>
+          <p>一文带你掌握单例模式！</p>
+<!-- more -->
+<h1 id="单例模式应用场景">单例模式应用场景</h1>
+<p>单例模式（Singleton Pattern）是指确保一个类在任何情况下都绝对只有一个实例，并提供一个全局访问点。单例模式是创建型模式。在Spring框架中ApplicationContext就是单例模式的应用。</p>
+<h1 id="饿汉式单例">饿汉式单例</h1>
+<p>饿汉式单例是在类加载的时候就立即初始化，并且创建单例对象。线程安全。<br>
+优点：没有加任何的锁、执行效率比较高。<br>
+缺点：类加载的时候就初始化，不管用与不用都占着空间，浪费了内存。</p>
+<pre><code class="language-java">public class HungrySingleton {
+    private static final HungrySingleton INSTANCE = new HungrySingleton();
+
+    private HungrySingleton(){}
+
+    public static final HungrySingleton getINSTANCE(){
+        return INSTANCE;
+    }
+}
+</code></pre>
+<p>还有另一种写法，利用静态代码块的方式：</p>
+<pre><code class="language-java">public class HungrySingleton {
+    private static final HungrySingleton INSTANCE;
+    static {
+        INSTANCE = new HungrySingleton();
+    }
+    private HungrySingleton(){}
+    public static final HungrySingleton getINSTANCE(){
+        return INSTANCE;
+    }
+}
+</code></pre>
+<p>以上写法都非常简单，饿汉式单例适用于在单例对象较少的情况下。</p>
+<h1 id="懒汉式">懒汉式</h1>
+<p>懒汉式单例的特点是：被外部类调用的时候内才会创建实例。</p>
+<ol>
+<li>非线程安全</li>
+</ol>
+<pre><code class="language-java">//懒汉式单例 //在外部需要使用的时候才进行实例化 
+public class LazySimpleSingleton { 
+    private LazySimpleSingleton(){} 
+    //静态块，公共内存区域 
+    private static LazySimpleSingleton lazy = null; 
+    public static LazySimpleSingleton getInstance(){ 
+        if(lazy == null){ 
+            lazy = new LazySimpleSingleton(); 
+        }
+        return lazy; 
+} 
+</code></pre>
+<p>以上写法在多线程调用的情况下会出现线程安全问题，有一定几率创建多个实例。<br>
+所以我们可以对以上代码进行修改，就是上锁：<br>
+2. 方法加锁</p>
+<pre><code class="language-java">public class LazySimpleSingleton { 
+    private LazySimpleSingleton(){} 
+    //静态块，公共内存区域 
+    private static LazySimpleSingleton lazy = null; 
+    public  synchronized static LazySimpleSingleton getInstance(){ 
+        if(lazy == null){ 
+            lazy = new LazySimpleSingleton(); 
+        }
+        return lazy; 
+} 
+</code></pre>
+<p>此种加锁方式在多线程情况下会导致线程阻塞，程序运行性能大幅下降。所以我们可以进一步升级：<br>
+3. 双重校验锁</p>
+<pre><code class="language-java">public class LazyDoubleCheckSingleton {
+    private volatile static LazyDoubleCheckSingleton lazy;
+    private LazyDoubleCheckSingleton() {
+    }
+    public static LazyDoubleCheckSingleton getInstance() {
+        if (lazy == null) {
+            synchronized (LazyDoubleCheckSingleton.class) {
+                if (lazy == null) {
+                    lazy = new LazyDoubleCheckSingleton();
+                }
+            }
+        }
+        return lazy;
+    }
+} 
+</code></pre>
+<p>此种方法采用了双重校验锁的方式，在实例创建完成后，多线程调用的情况下也不会阻塞线程。但是此种方式在多线程都来初始化实例的时候就会形成锁竞争，也会对性能造成影响。<br>
+我们可以采用一种更为优雅的写法：<br>
+4. 静态内部类</p>
+<pre><code class="language-java">public class StaticInnerClassHurrySingleton {
+    private StaticInnerClassHurrySingleton(){
+        if(Holder.SINGLETON!=null){
+            throw new RuntimeException(&quot;单例对象已经存在！&quot;);
+        }
+    }
+    public static final StaticInnerClassHurrySingleton getINSTANCE(){
+        return Holder.SINGLETON;
+    }
+    private static class Holder{
+        private static final StaticInnerClassHurrySingleton SINGLETON = new StaticInnerClassHurrySingleton();
+    }
+}
+</code></pre>
+<p>静态内部类的写法既没有饿汉式的内存浪费问题，也没有加锁带来的性能开销。内部类一定是在方法调用之前初始化的，巧妙的避免了线程安全问题。</p>
+<h1 id="单例模式的破坏">单例模式的破坏</h1>
+<h2 id="反射破坏单例">反射破坏单例</h2>
+<p>大家有没有发现，上面介绍的单例模式的构造方法除了加上private以外，没有做任何处理。如果我们使用反射来调用其构造方法，然后，再调用getInstance()方法，就可以创建两个不同的实例。现在来看一段测试代码，以StaticInnerClassHurrySingleton为例：</p>
+<pre><code class="language-java">public class StaticInnerClassHurrySingletonTest {
+    public static void main(String[] args) {
+        try {
+            //很无聊的情况下，进行破坏
+            Class&lt;?&gt; clazz = StaticInnerClassHurrySingleton.class;
+            //通过反射拿到私有的构造方法
+            Constructor c = clazz.getDeclaredConstructor(null);
+            //强制访问
+            c.setAccessible(true);
+            //暴力初始化
+            Object o1 = c.newInstance();
+            //调用了两次构造方法，相当于 new了两次
+            Object o2 = c.newInstance();
+            System.out.println(o1 == o2);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+<p>运行结果：false<br>
+显然创建了两个不同的实例，我们可以在构造方法中添加现在来，一旦出现多次创建，则直接抛出异常：</p>
+<pre><code class="language-java">public class StaticInnerClassHurrySingleton {
+    private StaticInnerClassHurrySingleton(){
+        //添加实例检查
+        if(Holder.SINGLETON!=null){
+            //抛出异常
+            throw new RuntimeException(&quot;实例已被创建&quot;);
+        }
+    }
+    public static final StaticInnerClassHurrySingleton getINSTANCE(){
+        return Holder.SINGLETON;
+    }
+    private static class Holder{
+        private static final StaticInnerClassHurrySingleton SINGLETON = new                   StaticInnerClassHurrySingleton();
+    }
+}
+</code></pre>
+<p>继续上面的测试，结果:</p>
+<pre><code class="language-java">java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+	at com.hiwei.pattern.singleton.hunger.LazyInnerClassSingletonTest.main(LazyInnerClassSingletonTest.java:19)
+Caused by: java.lang.RuntimeException: 实例已被创建
+	at com.hiwei.pattern.singleton.hunger.StaticInnerClassHurrySingleton.&lt;init&gt;(StaticInnerClassHurrySingleton.java:10)
+	... 5 more
+</code></pre>
+<p>反射破坏单例漏洞就被修复掉了。</p>
+<h2 id="序列化破坏单例">序列化破坏单例</h2>
+<p>当我们将一个单例对象创建好，有时候需要将对象序列化然后写入到磁盘，下次使用时再从磁盘中读取到对象，反序列化转化为内存对象。反序列化后的对象会重新分配内存，即重新创建。那如果序列化的目标的对象为单例对象，就违背了单例模式的初衷，相当于破坏了单例，来看一段代码：</p>
+<pre><code class="language-java">public class SeriableSingleton implements Serializable {
+    /*
+    序列化：
+    把内存中的状态通过转换成字节码的形式
+    从而转换一个 IO 流，写入到其他地方(可以是磁盘、网络 IO)
+    内存中状态给永久保存下来了
+    反序列化：
+    将已经持久化的字节码内容，转换为 IO 流 //通过 IO 流的读取，进而将读取的内容转换为 Java 对象
+    在转换过程中会重新创建对象new
+    */
+    public final static SeriableSingleton INSTANCE = new SeriableSingleton();
+    private SeriableSingleton() {
+    }
+    public static SeriableSingleton getInstance() {
+        return INSTANCE;
+    }
+}
+</code></pre>
+<p>测试代码：</p>
+<pre><code class="language-java">public class SeriableSingletonTest {
+    public static void main(String[] args) {
+        SeriableSingleton s1 = null;
+        SeriableSingleton s2 = SeriableSingleton.getInstance();
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(&quot;SeriableSingleton.obj&quot;);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(s2);
+            oos.flush();
+            oos.close();
+            FileInputStream fis = new FileInputStream(&quot;SeriableSingleton.obj&quot;);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            s1 = (SeriableSingleton) ois.readObject();
+            ois.close();
+            System.out.println(s1);
+            System.out.println(s2);
+            System.out.println(s1 == s2);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+<p>测试结果：</p>
+<pre><code class="language-java">com.hiwei.pattern.singleton.hunger.SeriableSingleton@6acbcfc0
+com.hiwei.pattern.singleton.hunger.SeriableSingleton@60e53b93
+false
+</code></pre>
+<p>结果表明单例模式已经被序列化破坏掉了。怎么避免呢？<br>
+增加readResolve()方法即可。来看优化代码：</p>
+<pre><code class="language-java">/**
+ * @author: hiwei
+ * @create: 2018-06-25 22:24
+ */
+public class SeriableSingleton implements Serializable {
+
+    public final static SeriableSingleton INSTANCE = new SeriableSingleton();
+    private SeriableSingleton() {
+    }
+    public static SeriableSingleton getInstance() {
+        return INSTANCE;
+    }
+    private Object readResolve(){ return INSTANCE; }
+}
+</code></pre>
+<p>仍由上面测试方法测试，测试结果：</p>
+<pre><code class="language-java">com.hiwei.pattern.singleton.hunger.SeriableSingleton@60e53b93
+com.hiwei.pattern.singleton.hunger.SeriableSingleton@60e53b93
+true
+</code></pre>
+<p>显然问题被解决了。</p>
 <h1 id="容器注册式">容器注册式</h1>
 
           <div class="toc-container"><ul class="markdownIt-TOC">
-<li><a href="#%E6%87%92%E6%B1%89%E5%BC%8F%E5%8D%95%E4%BE%8B">懒汉式单例</a></li>
-<li><a href="#%E9%A5%BF%E6%B1%89%E5%BC%8F">饿汉式</a></li>
+<li><a href="#%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF">单例模式应用场景</a></li>
+<li><a href="#%E9%A5%BF%E6%B1%89%E5%BC%8F%E5%8D%95%E4%BE%8B">饿汉式单例</a></li>
+<li><a href="#%E6%87%92%E6%B1%89%E5%BC%8F">懒汉式</a></li>
+<li><a href="#%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E7%9A%84%E7%A0%B4%E5%9D%8F">单例模式的破坏</a>
+<ul>
+<li><a href="#%E5%8F%8D%E5%B0%84%E7%A0%B4%E5%9D%8F%E5%8D%95%E4%BE%8B">反射破坏单例</a></li>
+<li><a href="#%E5%BA%8F%E5%88%97%E5%8C%96%E7%A0%B4%E5%9D%8F%E5%8D%95%E4%BE%8B">序列化破坏单例</a></li>
+</ul>
+</li>
 <li><a href="#%E5%AE%B9%E5%99%A8%E6%B3%A8%E5%86%8C%E5%BC%8F">容器注册式</a></li>
 </ul>
 </div>
