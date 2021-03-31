@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://hiwei-zhang.github.io</id>
     <title>Hiwei</title>
-    <updated>2021-03-30T14:30:09.876Z</updated>
+    <updated>2021-03-31T13:40:25.513Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://hiwei-zhang.github.io"/>
     <link rel="self" href="https://hiwei-zhang.github.io/atom.xml"/>
@@ -253,8 +253,76 @@ public class SeriableSingleton implements Serializable {
 com.hiwei.pattern.singleton.hunger.SeriableSingleton@60e53b93
 true
 </code></pre>
-<p>显然问题被解决了。</p>
-<h1 id="容器注册式">容器注册式</h1>
+<p>显然问题被解决了。<br>
+为什么加一个方法就解决了这个问题？我们可以看下JDK的源码，就是ObjectInputStream类的readObject()方法，通过这个方法我们可以看到以看到实际上实例化了两次，只不过新创建的对象没有被返回而已。这部分代码因为篇幅较多，就不在此解析了。那如果，创建对象的动作发生频率增大，就意味着内存分配开销也就随之增大。下面我们可以采用另一种方式来实现单例：</p>
+<h1 id="注册式单例">注册式单例</h1>
+<p>。注册式单例有两种写法：一种为容器缓存，一种为枚举登记。</p>
+<h2 id="枚举式单例">枚举式单例</h2>
+<p>枚举式单例的写法，来看代码，创建EnumSingleton类：</p>
+<pre><code class="language-java">public enum EnumSingleton { 
+    INSTANCE; 
+    private Object data; 
+    public Object getData() { 
+        return data; 
+    } 
+    public void setData(Object data) { 
+        this.data = data;
+    } 
+    public static EnumSingleton getInstance(){ 
+        return INSTANCE; 
+    } 
+}
+</code></pre>
+<p>使用反编译工具来反编译该类，可以得到以下代码：</p>
+<pre><code class="language-java">static {
+        INSTANCE = new EnumSingleton(&quot;INSTANCE&quot;, 0);
+        $VALUES = (new EnumSingleton[]{INSTANCE});
+    }
+</code></pre>
+<p>枚举式单例在静态代码块中就给INSTANCE进行了赋值，是饿汉式单例的实现。</p>
+<h2 id="容器式单例">容器式单例</h2>
+<pre><code class="language-java">public class ContainerSingleton {
+    private ContainerSingleton(){}
+    private static Map&lt;String,Object&gt; ioc = new ConcurrentHashMap&lt;String,Object&gt;();
+    public static Object getInstance(String className){
+        synchronized (ioc) {
+            if (!ioc.containsKey(className)) {
+                Object obj = null;
+                try {
+                    obj = Class.forName(className).newInstance();
+                    ioc.put(className, obj);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return obj;
+            } else {
+                return ioc.get(className);
+            }
+        }
+    }
+}
+</code></pre>
+<p>spring的IOC容器使用的就是这种单例模式。</p>
+<h2 id="threadlocal线程单例">ThreadLocal线程单例</h2>
+<p>线程单例实现 ThreadLocal。ThreadLocal 不能保证其创建的对象是全局唯一，但是能保证在单个线程中是唯一的，线程安全。</p>
+<pre><code class="language-java">public class ThreadLocalSingleton {
+    private static final ThreadLocal&lt;ThreadLocalSingleton&gt; threadLocalInstance =
+            new ThreadLocal&lt;ThreadLocalSingleton&gt;(){
+                @Override
+                protected ThreadLocalSingleton initialValue() {
+                    return new ThreadLocalSingleton();
+                }
+            };
+
+    private ThreadLocalSingleton(){}
+
+    public static ThreadLocalSingleton getInstance(){
+        return threadLocalInstance.get();
+    }
+}
+</code></pre>
+<h1 id="总结">总结</h1>
+<p>自此单例模式都实现了。单例模式保证了类内存里面只有一个内存实例，减少了内存开销，避免了对内存资源的多重占用。</p>
 ]]></content>
     </entry>
     <entry>
